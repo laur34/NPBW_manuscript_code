@@ -72,3 +72,4 @@ b2018_by_trap <- as.dist(meandist(b2018, mydf$trap))
 
 mantel.rtest(b2016_by_trap, b2018_by_trap)
 mantel(b2016_by_trap, b2018_by_trap, method="pearson", permutations = 999)
+
