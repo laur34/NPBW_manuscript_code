@@ -1,13 +1,13 @@
 #Create a PCOA or NM plot comparing sites with species.
-#install.packages("remotes")
-#library(remotes)
-#remotes::install_github("MadsAlbertsen/ampvis2")
+install.packages("remotes")
+library(remotes)
+remotes::install_github("MadsAlbertsen/ampvis2")
 library(ampvis2)
 #Load data for ampvis functions, like example:
 #amp_load(otutable, metadata = NULL, fasta = NULL, tree = NULL)
 #Create appropriate OTU table from current version of data:
-setwd("/media/laur/wdhdd1/allNPBW/")
-data <- read.table("ForR_5_newFeb.otusNPBW-AllApril2018BINsMegablast_VL.tsv", header=T, sep="\t", stringsAsFactors = F)
+#setwd("/media/laur/wdhdd11/allNPBW/")
+data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
 
 data$Species[data$Species == ""] <- NA
 data$Family[data$Family == ""] <- NA
@@ -112,3 +112,4 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 ##########################
 
 multiplot(p2016,p2018, cols=1)
+

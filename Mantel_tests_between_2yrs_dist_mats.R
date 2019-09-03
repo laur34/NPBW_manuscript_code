@@ -4,8 +4,8 @@
 library(vegan)
 #install.packages("betapart")
 library(betapart)
-setwd("/media/laur/wdhdd11/allNPBW/")
-data <- read.table("Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
+#setwd("/media/laur/wdhdd1/NPW_manuscript_code/")
+data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
 
 data$Species[data$Species == ""] <- NA
 data$Family[data$Family == ""] <- NA
@@ -40,7 +40,7 @@ tbindata2$year = rep(c("2016", "2018"),90)
 tbindata2$location =c(rep("outside", 30), rep("inside", 60), rep("outside", 30), rep("inside", 60))
 tbindata2$trap = c(rep("Igg", 10), rep("Jos", 10), rep("Sal", 10), rep("T102B", 10), rep("T134B", 10), rep("T152B", 10), rep("T163B", 10), rep("T350B", 10), rep("T464B", 10),
                    rep("Igg", 10), rep("Jos", 10), rep("Sal", 10), rep("T102B", 10), rep("T134B", 10), rep("T152B", 10), rep("T163B", 10), rep("T350B", 10), rep("T464B", 10))
-samplenames = read.table("trapnames", header=F, stringsAsFactors = F)
+samplenames = read.table("/media/laur/wdhdd1/NPBW_manuscript_code/trapnames", header=F, stringsAsFactors = F)
 tbindata2$sample = samplenames$V1
 
 rownames(tbindata2) <- c()
@@ -61,7 +61,7 @@ d2018_by_trap <- as.dist(meandist(d2018, mydf$trap))
 library(ade4)
 mantel.rtest(d2016_by_trap, d2018_by_trap)
 #
-mantel(d2016_by_trap, d2018_by_trap, method = "pearson", permutations = 999) # using this one right now (first one)
+mantel(d2016_by_trap, d2018_by_trap, method = "pearson", permutations = 999) # using this one right now.
 
 # Bray-Curtis:
 b2016 <- as.dist(as.matrix(bc)[mydf$year=="2016", mydf$year=="2016"])
