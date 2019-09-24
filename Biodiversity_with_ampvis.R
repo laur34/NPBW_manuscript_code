@@ -9,6 +9,8 @@ library(ampvis2)
 #setwd("/media/laur/wdhdd11/allNPBW/")
 data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
 
+######################### Clean/prepare data for ampvis
+#Replace blanks with NAs.
 data$Species[data$Species == ""] <- NA
 data$Family[data$Family == ""] <- NA
 data$Subfamily[data$Subfamily == ""] <- NA
@@ -17,7 +19,7 @@ data$BIN[data$BIN == ""] <- NA
 data$Phylum[data$Phylum == ""] <- NA
 data$Class[data$Class == ""] <- NA
 data$Order[data$Order == ""] <- NA
-# Tissue powders only:
+# Tissue powders only for this comparison - remove others:
 data <- data[, !grepl("_224", names(data))]
 data <- data[, !grepl("_210", names(data))]
 data <- data[, !grepl("Etoh", names(data))]
@@ -27,30 +29,29 @@ head(data)
 #The rows are OTU IDs, and the cols are samples:
 #(see https://madsalbertsen.github.io/ampvis2/reference/amp_load.html)
 df <- data[13:ncol(data)]
-#The OTU ID's are expected to be in eiher the rownames of the data frame or in a column called "OTU". 
+#The OTU ID's are expected to be in either the rownames of the data frame or in a column called "OTU". 
 colnames(df)[1] <- "OTU"
 #The last 7 columns are the corresponding taxonomy assigned to the OTUs, named "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species".
 df$Kingdom <- rep("Animalia", length(df$OTU))
 otutbl <- cbind.data.frame(df, data$Phylum, data$Class, data$Order, data$Family, data$Genus, data$Species)
 colnames(otutbl)[183:188] <- c("Phylum", "Class", "Order", "Family", "Genus", "Species")
 
-######################### 2016 first:
+######################### Analyze 2016 data:
 otutbl2016 <- otutbl[,  !grepl("2018", names(otutbl))]
 head(otutbl2016)
-
+# Read in created metadata file and combine using amp_load() to make it compatible with ampvis2 functions.
 metadata2016 <- read.table("Metadata2016_r5.csv", header=T, sep=",")
 head(metadata2016)
 
-# Combine the data with amp_load() to make it compatible with ampvis2 functions.
 d2016 <- amp_load(otutable=otutbl2016, metadata = metadata2016)
 d2016
-# Cannot use a custom distance matrix
-# due to this packagre requiring 7-level taxonomy as opposed to BINs, which were used in creating Jaccard distance matrix with betadisper.
-# (see https://madsalbertsen.github.io/ampvis2/reference/amp_ordinate.html)
 
+# Create new distance matrix with 7-level taxonomy (not BINs).
+# (see https://madsalbertsen.github.io/ampvis2/reference/amp_ordinate.html)
 p2016 <- amp_ordinate(d2016, type="PCA", transform="hellinger", sample_color_by = "Trap", sample_colorframe = T)+
   labs(title="PCA of taxonomy by trap, 2016", tag="A")
-######################## 2018:
+
+######################## Analyze 2018 data:
 otutbl2018 <- otutbl[, !grepl("2016", names(otutbl))]
 head(otutbl2018)
 metadata2018 <- read.table("Metadata2018_r5.csv", header=T, sep=",")
@@ -62,7 +63,8 @@ p2018 <- amp_ordinate(d2018, type="PCA", transform="hellinger", sample_color_by 
   labs(title="PCA of taxonomy by trap, 2018", tag="B")
 
 
-######http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+######################### Set up multiple plot function and plot both years with 2016 on top:
+# According to directions at http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
 # Multiple plot function
 #
 # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
