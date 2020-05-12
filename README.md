@@ -1,2 +1,2 @@
 # NPBW_manuscript_code
-Code to create the figures which were made by R.
+This repository contains R code and metadata files for creating Fiugre 5 and performing the Mantel test.
