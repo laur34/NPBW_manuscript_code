@@ -28,13 +28,21 @@ bindata <- data[,c(9,14:ncol(data))]
 # Combine by BIN to avoid duplicate row names (changes column 1 name to Group.1).
 bindata1 <- aggregate(bindata[,2:ncol(bindata)], by=list(bindata[,1]), FUN=sum )
 
+bindata2 <- bindata1[,-1]
+rownames(bindata2) <- bindata1[,1]
+
+t(bindata2)[1:5,1:6]
 # Make it a matrix, for use with rarefy
-bindata2 <- bindata1[-1]
+#bindata2 <- bindata2[-1]
 m_bindata <- as.matrix(bindata2)
-# Rarefy ##### Not finished!
-S <- specnumber(m_bindata)
-raremax <- min(rowSums(m_bindata))
-Srare <- rarefy(m_bindata, raremax)
+#remove rows (BINs) with sum of 0
+m_bindata <- m_bindata[which(rowSums(m_bindata)>0),]
+#transpose
+tm_bindata <- t(m_bindata)
+# Rarefy
+S <- specnumber(tm_bindata)
+raremax <- min(rowSums(tm_bindata))
+Srare <- rarefy(tm_bindata, raremax)
 # Create rarecurve
 plot(S, Srare, xlab="Observed No. of BINs", ylab="Rarefied No. of BINs")
 abline(0,1)
