@@ -111,6 +111,7 @@ tdf$collection <- rep(c("May_I","May_II","June_I","June_II","July_I","July_II","
 #library(reshape2)
 tdf <- tdf[,-1]
 library(ggplot2)
-g <- ggplot(data=tdf, mapping=aes(x=collection, y=Diptera, group=year, color=year))
+collection_order <- c("May_I","May_II","June_I","June_II","July_I","July_II","Aug_I","Aug_II","Sep_I","Sep_II")
+g <- ggplot(data=tdf, mapping=aes(x=factor(collection, level=collection_order), y=Diptera, group=year, color=year))
 g + geom_line() + theme_classic()
 
