@@ -2,10 +2,13 @@
 ## 13.5.2020 LH
 
 library(vegan)
-setwd("/media/laur/wdhdd1/NPBW_manuscript_code/")
+#setwd("/media/laur/wdhdd1/NPBW_manuscript_code/")
+setwd("/home/laur/Schreibtisch/NPBW_manuscript_code/")
+setwd("/home/laur/Schreibtisch/NPBW_raw_data/allNPBW/")
 
 # Read in OTU table (homogenized samples only) and clean it for R.
-data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
+data <- read.table("Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
+data <- read.table("ForR_5_newFeb.otusNPBW-AllApril2018BINsMegablast_VL.tsv", header=T, sep="\t", stringsAsFactors = F)
 
 data$Species[data$Species == ""] <- NA
 data$Family[data$Family == ""] <- NA
@@ -31,24 +34,20 @@ bindata1 <- aggregate(bindata[,2:ncol(bindata)], by=list(bindata[,1]), FUN=sum )
 bindata2 <- bindata1[,-1]
 rownames(bindata2) <- bindata1[,1]
 
-t(bindata2)[1:5,1:6]
+#t(bindata2)[1:5,1:6]
 # Make it a matrix, for use with rarefy
 #bindata2 <- bindata2[-1]
-m_bindata <- as.matrix(bindata2)
+m_bindata <- as.matrix(t(bindata2))
 #remove rows (BINs) with sum of 0
 m_bindata <- m_bindata[which(rowSums(m_bindata)>0),]
 #transpose
-tm_bindata <- t(m_bindata)
+#tm_bindata <- t(m_bindata)
 # Rarefy
-S <- specnumber(tm_bindata)
-raremax <- min(rowSums(tm_bindata))
-Srare <- rarefy(tm_bindata, raremax)
+S <- specnumber(m_bindata)
+raremax <- min(rowSums(m_bindata))
+Srare <- rarefy(m_bindata, raremax)
 # Create rarecurve
 plot(S, Srare, xlab="Observed No. of BINs", ylab="Rarefied No. of BINs")
 abline(0,1)
-rarecurve(m_bindata, step=20, sample=raremax, col="mediumslateblue", cex=0.6)
-
-
-############ Other samples (lower read numbers) Ethanol, Filter ##################
-# Read in OTU table of ethanol samples and clean it for R.
-data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/For_R_4-all.otusNPBW-AllApril2018BINsMegablast.tsv", header=T, sep="\t", stringsAsFactors = F)
+rarecurve(m_bindata, step=20, sample=raremax, col="mediumslateblue", cex=0.6, ylab="BINs", label=NULL)
+title(main="Rarefaction curves for homogenized tissue samples")
