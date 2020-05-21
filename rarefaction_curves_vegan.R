@@ -22,9 +22,9 @@ data$Order[data$Order == ""] <- NA
 # Subset the table to necessary columns (will be using BINs).
 data <- data[, !grepl("_224", names(data))]
 data <- data[, !grepl("_210", names(data))]
-data <- data[, !grepl("Etoh", names(data))]
-data <- data[, !grepl("semi", names(data))]
-data <- data[, !grepl("filter", names(data))]
+#data <- data[, !grepl("Etoh", names(data))]
+#data <- data[, !grepl("semi", names(data))]
+#data <- data[, !grepl("filter", names(data))]
 
 bindata <- data[,c(9,14:ncol(data))]
 
@@ -50,4 +50,4 @@ Srare <- rarefy(m_bindata, raremax)
 plot(S, Srare, xlab="Observed No. of BINs", ylab="Rarefied No. of BINs")
 abline(0,1)
 rarecurve(m_bindata, step=20, sample=raremax, col="mediumslateblue", cex=0.6, ylab="BINs", label=NULL)
-title(main="Rarefaction curves for homogenized tissue samples")
+title(main="Rarefaction curves for all samples")
