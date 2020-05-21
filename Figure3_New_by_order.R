@@ -1,3 +1,5 @@
+#For BIN-based DB results, create line graph of numbers of BINs of each of
+# four major orders detected throughout the two years.
 setwd("/home/laur/Schreibtisch/NPBW_raw_data/allNPBW")
 data <- read.table("ForR_5_newFeb.otusNPBW-AllApril2018BINsMegablast_VL.tsv", header=T, sep="\t", stringsAsFactors = F)
 
@@ -22,7 +24,7 @@ data <- data[, !grepl("_210", names(data))]
 names(data)
 ncol(data)
 names(data)
-# Make it presence absence (if better for plots) -
+# Make it presence absence
 # Change values greater than 0 to 1:
 data[,c(14:ncol(data))] <- (data[,c(14:ncol(data))] != 0)*1
 #Group column data by Month I and II (all traps together)
@@ -74,8 +76,13 @@ newdf <- cbind.data.frame(data2016_ro$BIN, data2016_ro$Order, data2016_ro[14:nco
 
 colnames(newdf) <- c("BIN", "Order", "MayI_2016", "MayII_2016", "JuneI_2016", "JuneII_2016", "JulyI_2016", "JulyII_2016", "AugI_2016", "AugII_2016", "SepI_2016", "SepII_2016", "MayI_2018", "MayII_2018", "JuneI_2018", "JuneII_2018", "JulyI_2018", "JulyII_2018", "AugI_2018", "AugII_2018", "SepI_2018", "SepII_2018")
 
-#make it presence-absence again at this point.
-newdf[3:ncol(newdf)] <- (newdf[3:ncol(newdf)] != 0)*1
+
+
+
+#Create a presence-absence version at this point for additional line.
+pa <- (newdf[3:ncol(newdf)] != 0)*1
+padf <- cbind.data.frame(newdf[1:2], pa)
+
 
 #Add shared data columns
 newdf$MayI_both <- as.numeric((newdf$MayI_2016 > 0) & (newdf$MayI_2018 >0))
@@ -88,6 +95,30 @@ newdf$AugI_both <- as.numeric((newdf$AugI_2016 > 0) & (newdf$AugI_2018 >0))
 newdf$AugII_both <- as.numeric((newdf$AugII_2016 > 0) & (newdf$AugII_2018 >0))
 newdf$SepI_both <- as.numeric((newdf$SepI_2016 > 0) & (newdf$SepI_2018 >0))
 newdf$SepII_both <- as.numeric((newdf$SepII_2016 > 0) & (newdf$SepII_2018 >0))
+
+#### Add 2016 and 2018 columns Presence-Absence
+newdf$MayI_2016_PA <- padf$MayI_2016
+newdf$MayII_2016_PA <- padf$MayII_2016
+newdf$JuneI_2016_PA <- padf$JuneI_2016
+newdf$JuneII_2016_PA <- padf$JuneII_2016
+newdf$JulyI_2016_PA <- padf$JulyI_2016
+newdf$JulyII_2016_PA <- padf$JulyII_2016
+newdf$AugI_2016_PA <- padf$AugI_2016
+newdf$AugII_2016_PA <- padf$AugII_2016
+newdf$SepI_2016_PA <- padf$SepI_2016
+newdf$SepII_2016_PA <- padf$SepII_2016
+
+newdf$MayI_2018_PA <- padf$MayI_2018
+newdf$MayII_2018_PA <- padf$MayII_2018
+newdf$JuneI_2018_PA <- padf$JuneI_2018
+newdf$JuneII_2018_PA <- padf$JuneII_2018
+newdf$JulyI_2018_PA <- padf$JulyI_2018
+newdf$JulyII_2018_PA <- padf$JulyII_2018
+newdf$AugI_2018_PA <- padf$AugI_2018
+newdf$AugII_2018_PA <- padf$AugII_2018
+newdf$SepI_2018_PA <- padf$SepI_2018
+newdf$SepII_2018_PA <- padf$SepII_2018
+######
 
 #Aggregate by order
 ag <- aggregate(newdf[3:ncol(newdf)], by=list(newdf$Order), FUN=sum)
@@ -105,13 +136,19 @@ colnames(tdf) <- orders
 library(data.table)
 setDT(tdf, keep.rownames = TRUE)[]
 tdf
-tdf$year <- c(rep("2016",10),rep("2018",10),rep("shared",10))
-tdf$collection <- rep(c("May_I","May_II","June_I","June_II","July_I","July_II","Aug_I","Aug_II","Sep_I","Sep_II"),3)
+tdf$year <- c(rep("2016",10),rep("2018",10),rep("shared",10),rep("2016_PA",10), rep("2018_PA",10))
+tdf$collection <- rep(c("May_I","May_II","June_I","June_II","July_I","July_II","Aug_I","Aug_II","Sep_I","Sep_II"),5)
 
-#library(reshape2)
+
 tdf <- tdf[,-1]
 library(ggplot2)
 collection_order <- c("May_I","May_II","June_I","June_II","July_I","July_II","Aug_I","Aug_II","Sep_I","Sep_II")
-g <- ggplot(data=tdf, mapping=aes(x=factor(collection, level=collection_order), y=Diptera, group=year, color=year))
-g + geom_line() + theme_classic()
+year_order <- c("2016", "2016_PA", "2018", "2018_PA", "shared")
+
+g <- ggplot(data=tdf, aes(x=factor(collection, level=collection_order), y=Diptera, group=year ))+
+  geom_line(aes(linetype=year, color=factor(year,levels=year_order))) +
+  xlab(NULL) + ylab("BINs detected") + labs(color='year') +
+  scale_linetype_manual(values=c("solid","dotted","solid","dotted","solid")) +
+  scale_color_manual(values=c("#56B4E9", "#56B4E9", "#E69F00", "#E69F00", "#999999"), labels=c("2016","2016_PA","2018","2018_PA","shared") ) +
+  theme_classic()
 
