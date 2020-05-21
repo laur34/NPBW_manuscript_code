@@ -147,8 +147,78 @@ year_order <- c("2016", "2016_PA", "2018", "2018_PA", "shared")
 
 g <- ggplot(data=tdf, aes(x=factor(collection, level=collection_order), y=Diptera, group=year ))+
   geom_line(aes(linetype=year, color=factor(year,levels=year_order))) +
-  xlab(NULL) + ylab("BINs detected") + labs(color='year') +
+  xlab(NULL) + ylab("BINs detected") + labs(color='year', title="Diptera", tag="A") +
   scale_linetype_manual(values=c("solid","dotted","solid","dotted","solid")) +
   scale_color_manual(values=c("#56B4E9", "#56B4E9", "#E69F00", "#E69F00", "#999999"), labels=c("2016","2016_PA","2018","2018_PA","shared") ) +
   theme_classic()
 
+l <- ggplot(data=tdf, aes(x=factor(collection, level=collection_order), y=Lepidoptera, group=year ))+
+  geom_line(aes(linetype=year, color=factor(year,levels=year_order))) +
+  xlab(NULL) + ylab("BINs detected") + labs(color='year', title="Lepidoptera", tag="B") +
+  scale_linetype_manual(values=c("solid","dotted","solid","dotted","solid")) +
+  scale_color_manual(values=c("#56B4E9", "#56B4E9", "#E69F00", "#E69F00", "#999999"), labels=c("2016","2016_PA","2018","2018_PA","shared") ) +
+  theme_classic()
+
+c <- ggplot(data=tdf, aes(x=factor(collection, level=collection_order), y=Coleoptera, group=year ))+
+  geom_line(aes(linetype=year, color=factor(year,levels=year_order))) +
+  xlab(NULL) + ylab("BINs detected") + labs(color='year', title="Coleoptera", tag="C") +
+  scale_linetype_manual(values=c("solid","dotted","solid","dotted","solid")) +
+  scale_color_manual(values=c("#56B4E9", "#56B4E9", "#E69F00", "#E69F00", "#999999"), labels=c("2016","2016_PA","2018","2018_PA","shared") ) +
+  theme_classic()
+
+h <- ggplot(data=tdf, aes(x=factor(collection, level=collection_order), y=Hymenoptera, group=year ))+
+  geom_line(aes(linetype=year, color=factor(year,levels=year_order))) +
+  xlab(NULL) + ylab("BINs detected") + labs(color='year', title="Hymenoptera", tag="D") +
+  scale_linetype_manual(values=c("solid","dotted","solid","dotted","solid")) +
+  scale_color_manual(values=c("#56B4E9", "#56B4E9", "#E69F00", "#E69F00", "#999999"), labels=c("2016","2016_PA","2018","2018_PA","shared") ) +
+  theme_classic()
+
+######http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+##########################
+multiplot(g,l,c,h, cols=2)
