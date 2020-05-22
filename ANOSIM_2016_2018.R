@@ -1,5 +1,5 @@
-## Script to perform ANOSIM test on NPBW samples inside and outside of the Park.
-## 12.5.2020 LH
+## Script to perform ANOSIM test on NPBW samples inside and outside of the Park, for each study year.
+## 21.5.2020 LH
 ## Tutorial at https://jkzorz.github.io/2019/06/11/ANOSIM-test.html
 
 # Read in an OTU table with columns as OTUs and rows as samples, with metadata as (a) column(s).
@@ -24,28 +24,33 @@ data <- data[, !grepl("Etoh", names(data))]
 data <- data[, !grepl("semi", names(data))]
 data <- data[, !grepl("filter", names(data))]
 head(data)
-
-
 #Subset to BINs and sample data
 bindata <- data[,c(9,14:ncol(data))]
+#Split the years here.
+bin_year <- bindata[,!grepl("2016", names(bindata1))]
 #Combine by BIN to avoid duplicate row names (changes column 1 name to Group.1).
-bindata1 <- aggregate(bindata[,2:ncol(bindata)], by=list(bindata[,1]), FUN=sum )
+bin_year1 <- aggregate(bin_year[,2:ncol(bin_year)], by=list(bin_year[,1]), FUN=sum )
 
 #Transpose (first get rid of the column 1 name, then make it the row names).
-bindata2 <- bindata1[,-1]
-rownames(bindata2) <- bindata1[,1]
+bin_year2 <- bin_year1[,-1]
+rownames(bin_year2) <- bin_year1[,1]
 
-tbindata2 <- data.frame(t(bindata2))
+tbin_year2 <- data.frame(t(bin_year2))
+
 #write.csv(tbindata2, file="tbindata2_int_anosim.csv")
 #Add metadata into a column
-tbindatam <- cbind.data.frame(tbindata2, as.vector(c(rep("outside",60),rep("inside",120))) )
-ncol(tbindatam) #last col is md
-#Make the data frame into a matrix of abundance info, after changing row names into a column.
-tbindatam1 <- cbind(rownames(tbindatam), data.frame(tbindatam, row.names = NULL))
-colnames(tbindatam1)[which(names(tbindatam1)=="rownames(tbindatam)")] <- "SampleName"
-colnames(tbindatam1)[which(names(tbindatam1)=="as.vector.c.rep..outside...60...rep..inside...120...")] <- "Location"
+tbin_yearm <- cbind.data.frame(tbin_year2, as.vector(c(rep("outside",30),rep("inside",60))) )
+ncol(tbin_yearm) #last col is md
 
-com <- tbindatam1[-ncol(tbindatam1)]
+
+#Make the data frame into a matrix of abundance info, after changing row names into a column.
+tbin_yearm1 <- cbind(rownames(tbin_yearm), data.frame(tbin_yearm, row.names = NULL))
+colnames(tbin_yearm1)[which(names(tbin_yearm1)=="rownames(tbin_yearm)")] <- "SampleName"
+colnames(tbin_yearm1)[which(names(tbin_yearm1)=="as.vector.c.rep..outside...30...rep..inside...60...")] <- "Location"
+
+
+
+com <- tbin_yearm1[-ncol(tbin_yearm1)]
 com <- com[-1]
 m_com <- as.matrix(com)
 
@@ -56,7 +61,7 @@ m_com <- as.matrix(com)
 #‘distance = “bray”’ is the dissimilarity measure (Bray-Curtis) that I would like to use in the analysis; 
 #and ‘permutations = 9999’ is the number of permutations done with the data to determine significance.
 
-ano = anosim(m_com, tbindatam1$Location, distance = "bray", permutations = 9999)
+ano = anosim(m_com, tbin_yearm1$Location, distance = "bray", permutations = 9999)
 ### wait for it! ###
 ano #Reults: ANOSIM statistic: 0.2073,  Significance: 1e-04
 # Reject the null.
