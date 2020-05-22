@@ -1,13 +1,14 @@
 #Create a PCOA or NM plot comparing sites with species.
-install.packages("remotes")
+#install.packages("remotes")
 library(remotes)
-remotes::install_github("MadsAlbertsen/ampvis2")
+#remotes::install_github("MadsAlbertsen/ampvis2")
 library(ampvis2)
 #Load data for ampvis functions, like example:
 #amp_load(otutable, metadata = NULL, fasta = NULL, tree = NULL)
 #Create appropriate OTU table from current version of data:
 #setwd("/media/laur/wdhdd11/allNPBW/")
-data <- read.table("/media/laur/wdhdd1/NPBW_manuscript_code/Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
+setwd("/home/laur/Schreibtisch/NPBW_manuscript_code/")
+data <- read.table("Reordered_for_pest_R_5_newFebNPBW_VL2.tsv", header=T, sep="\t", stringsAsFactors = F)
 
 ######################### Clean/prepare data for ampvis
 #Replace blanks with NAs.
@@ -49,9 +50,9 @@ d2016
 # Create new distance matrix with 7-level taxonomy (not BINs).
 # (see https://madsalbertsen.github.io/ampvis2/reference/amp_ordinate.html)
 p2016 <- amp_ordinate(d2016, type="PCA", transform="hellinger", sample_color_by = "Trap", sample_colorframe = T)+
-  labs(title="PCA of taxonomy by trap, 2016", tag="A")
+  labs(title="PCA of taxonomy by trap, 2016", tag="A")+ annotate(geom="text", x=0.5, y=0.5, label="ANOSIM R: 0.2, Significance: 2e-04")
 
-######################## Analyze 2018 data:
+  ######################## Analyze 2018 data:
 otutbl2018 <- otutbl[, !grepl("2016", names(otutbl))]
 head(otutbl2018)
 metadata2018 <- read.table("Metadata2018_r5.csv", header=T, sep=",")
@@ -60,7 +61,7 @@ head(metadata2018)
 d2018 <- amp_load(otutable=otutbl2018, metadata=metadata2018)
 d2018
 p2018 <- amp_ordinate(d2018, type="PCA", transform="hellinger", sample_color_by = "Trap", sample_colorframe = T)+
-  labs(title="PCA of taxonomy by trap, 2018", tag="B")
+  labs(title="PCA of taxonomy by trap, 2018", tag="B") + annotate(geom="text", x=0.5, y=0.75, label="ANOSIM R: 0.2393, Significance: 1e-04")
 
 
 ######################### Set up multiple plot function and plot both years with 2016 on top:
