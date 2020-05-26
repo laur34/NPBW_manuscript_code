@@ -82,7 +82,7 @@ year <- c(rep("2016",10) ,rep("2018",10))
 df <- cbind.data.frame(collection,num_coll,year)
 collection_order = c("May I", "May II",  "June I",  "June II", "July I",  "July II", "Aug. I",  "Aug. II", "Sep. I",  "Sep. II")
 
-p <- ggplot(data=df, aes(x=factor(collection, level=collection_order), y=num_coll, group=year, color=year)) +
+p <- ggplot(data=df, aes(x=factor(collection, level=collection_order), y=num_coll, group=year, color=year)) + geom_line(linetype="dotted")+
   geom_point(shape=factor(year), size=3) +
   labs(title="Lymantria dispar", x=NULL, y="Number of detections") +
   theme_classic() +

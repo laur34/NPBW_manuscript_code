@@ -93,7 +93,7 @@ num_coll_ldu <- c(ldu_2016, ldu_2018)
 df <- cbind.data.frame(collection,num_coll_et,num_coll_ldu,year)
 collection_order = c("May I", "May II",  "June I",  "June II", "July I",  "July II", "Aug. I",  "Aug. II", "Sep. I",  "Sep. II")
 
-p <- ggplot(data=df, aes(x=factor(collection, level=collection_order), y=num_coll_et, group=year, color=year)) +
+p <- ggplot(data=df, aes(x=factor(collection, level=collection_order), y=num_coll_et, group=year, color=year)) +  geom_line(linetype="dotted") +
   geom_point(shape=factor(year), size=3) +
   labs(title="Epinotia tedella and Lymantria dispar", x=NULL, y="Number of detections") +
   theme_classic() +
