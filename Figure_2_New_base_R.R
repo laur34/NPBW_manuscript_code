@@ -3,6 +3,8 @@
 #setwd("/media/laur/wdhdd1/allNPBW/")
 setwd("/home/laur/Schreibtisch/NPBW_manuscript_code/")
 
+layout(matrix(c(1,1,1,1,2,4,3,5),2,4))
+
 # Calculate total BINs for 4 Orders 2016 and 2018:
 data <- read.table("/home/laur/Schreibtisch/NPBW_raw_data/allNPBW/ForR_5_newFeb.otusNPBW-AllApril2018BINsMegablast_VL.tsv", header=T, sep="\t", stringsAsFactors = F)
 head(data)
@@ -60,7 +62,7 @@ ld2018 <- length(unique(na.omit(data2018Dip$BIN))) #1903
 lh2018 <- length(unique(na.omit(data2018Hym$BIN))) #709
 ll2018 <- length(unique(na.omit(data2018Lep$BIN))) #351
 
-############################ 2012
+######## 2012
 data2012 <- read.table("/home/laur/Schreibtisch/NPBW_raw_data/allNPBW/Projects_GlobalMalaise_2012.csv", header=T, sep="\t", stringsAsFactors = F)
 
 data2012Cole <- data2012[which(data2012$Order=="Coleoptera"), ]
@@ -74,30 +76,21 @@ lh2012 <- length(unique(data2012Hym$BIN[data2012Hym$BIN != ""])) #678
 ll2012 <- length(unique(data2012Lep$BIN[data2012Lep$BIN != ""])) #64
 
 
-###########################
+########################### Create Barplot #####################################
 df <- cbind.data.frame(c(lc2012,ld2012,lh2012,ll2012), c(lc2016,ld2016,lh2016,ll2016), c(lc2018,ld2018,lh2018,ll2018) )
 names(df) <- c("x2012", "x2016", "x2018")
 Order <- (c("Coleoptera", "Diptera", "Hymenoptera", "Lepidoptera") )
 df <- cbind.data.frame(Order,df)
+#
+df2 <- df[2:4]
+row.names(df2) <- df$Order
 
-#barplot(df$x2012)
-library(ggplot2)
-library(reshape)
-library(RColorBrewer)
+barcolors <- c("#CC6666", "#9999CC", "#66CC99")
+barplot(t(df2), beside=T, ylab="BINs", col=barcolors,
+        main="BINs detected for four major insect orders", font.main=1)
+legend("topright", c("2012", "2016", "2018"), fill=barcolors)
 
-mdf <- melt(df, id='Order')
-
-ggplot(data=mdf, aes(x=Order, y=value, fill=factor(variable)) ) +
-  geom_bar(stat="identity", position=position_dodge() ) +
-  scale_fill_manual(values=c("#CC6666", "#9999CC", "#66CC99"), name=NULL, labels=c("2012","2016","2018") ) +
-  theme_bw() +
-  scale_x_discrete(name=NULL) +
-  scale_y_continuous(labels=waiver(), name=NULL) +
-  ggtitle("BINs Detected")
-
-######################### Venn Diagrams
-par(mfrow=c(2,2), mar=c(2,2,2,2))
-#layout(matrix(1,2, byrow=FALSE) )
+################### Create Venn Diagrams #########################
 library(venneuler)
 #Coleoptera
 cole_2012_2016 <- length(intersect(unique(data2012Cole$BIN[data2012Cole$BIN != ""]), data2016Cole$BIN[data2016Cole$BIN != ""]))
@@ -140,5 +133,3 @@ lep_venn$labels <- c("2012", "2016", "2018")
 plot(lep_venn)
 title(font.main=1, main="Lepidoptera")
 
-
-dev.off()
