@@ -3,7 +3,7 @@
 #setwd("/media/laur/wdhdd1/allNPBW/")
 setwd("/home/laur/Schreibtisch/NPBW_manuscript_code/")
 
-layout(matrix(c(1,1,1,1,2,4,3,5),2,4))
+#layout(matrix(c(1,1,1,1,2,4,3,5),2,4))
 
 # Calculate total BINs for 4 Orders 2016 and 2018:
 data <- read.table("/home/laur/Schreibtisch/NPBW_raw_data/allNPBW/ForR_5_newFeb.otusNPBW-AllApril2018BINsMegablast_VL.tsv", header=T, sep="\t", stringsAsFactors = F)
@@ -86,11 +86,14 @@ df2 <- df[2:4]
 row.names(df2) <- df$Order
 
 barcolors <- c("#CC6666", "#9999CC", "#66CC99")
+plot.new()
 barplot(t(df2), beside=T, ylab="BINs", col=barcolors,
         main="BINs detected for four major insect orders", font.main=1)
 legend("topright", c("2012", "2016", "2018"), fill=barcolors)
 
 ################### Create Venn Diagrams #########################
+plot.new()
+par(mfrow=c(2,2))
 library(venneuler)
 #Coleoptera
 cole_2012_2016 <- length(intersect(unique(data2012Cole$BIN[data2012Cole$BIN != ""]), data2016Cole$BIN[data2016Cole$BIN != ""]))
@@ -101,6 +104,7 @@ cole_venn <- venneuler(c(A=lc2012, B=lc2016, C=lc2018, "A&B"=cole_2012_2016, "A&
 cole_venn$labels <- c("2012", "2016", "2018")
 plot(cole_venn)
 title(font.main=1, main="Coleoptera")
+
 
 
 #Diptera
