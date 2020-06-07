@@ -100,7 +100,16 @@ p <- ggplot(data=df, aes(x=factor(collection, level=collection_order), y=num_col
   theme(plot.title = element_text(face="italic"))+
   geom_point(aes(y=num_coll_ldu)) +  geom_line(linetype="dotted")
   
-p
+#p <- ggplot(data=df) +
+#  geom_point(aes(x=factor(collection, level=collection_order), y=num_coll_et, shape=factor(year), group=year, color=year)) +
+#  geom_line(aes(x=factor(collection, level=collection_order), y=num_coll_et, shape=factor(year), group=year, color=year))+
+#  geom_point(aes(x=factor(collection, level=collection_order), y=num_coll_ldu, shape=factor(year), group=year, color=year)) +
+#  geom_line(aes(x=factor(collection, level=collection_order), y=num_coll_ldu, shape=factor(year), group=year, color=year))+
+#  labs(title="Epinotia tedella and Lymantria dispar", x=NULL, y="Number of detections") +
+#  theme_classic() +
+#  theme(plot.title = element_text(face="italic"))
+
+
 ####### Add the second species (have to redo plot)
 df2 <- cbind.data.frame(rep(collection,2), c(rep("Epinotia tedella",20),rep("Lissonota dubia",20)), c(num_coll_et,num_coll_ldu), year)
 colnames(df2) <- c("collection", "species", "num_coll", "year")

@@ -63,6 +63,7 @@ length(cole_twelve)
 length(cole_sixteen)
 length(cole_eighteen)
 ######### Diptera ##################
+dip_data <- data[which(data$Order=="Diptera"), ]
 dip_data <- dip_data[which(dip_data$Order=="Diptera"), ]
 ## Subset to contain columns 1 to (14) and 2016:
 dip_data2016 <- cbind.data.frame(dip_data[,1:13], dip_data[,grepl("2016", names(dip_data))] )
